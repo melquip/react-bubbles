@@ -42,6 +42,12 @@ const ColorList = ({ colors, updateColors }) => {
 			isValid = false;
 			errors.push('There\'s already a color with this hex code in the list!');
 		}
+		if (currentColor.code.hex) {
+			if (!/^#([0-9a-f]{3}){1,2}$/i.test(currentColor.code.hex.toLowerCase())) {
+				isValid = false;
+				errors.push('This is not a valid hex color!');
+			}
+		}
 		setColorFormErrors(errors);
 		console.log('errors', errors, currentColor, duplicateColor);
 		return isValid;

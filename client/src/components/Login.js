@@ -13,7 +13,7 @@ const Login = (props) => {
 	}
 	const onLogin = (e) => {
 		e.preventDefault();
-		axios.post(`/login`, loginForm)
+		axios.post(`http://localhost:5000/api/login`, loginForm)
 		.then(response => {
 			localStorage.setItem('token', response.data.payload);
 			props.history.push('/bubbles')

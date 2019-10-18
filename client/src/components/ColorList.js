@@ -21,17 +21,27 @@ const ColorList = ({ colors, updateColors }) => {
 		// Make a put request to save your updated color
 		// think about where will you get the id from...
 		// where is is saved right now?
-		axiosWithAuth().put(`colors/${colorToEdit.id}`, colorToEdit)
-			.then(response => {
-				const editedColor = response.data;
-				updateColors(colors.map(color => {
-					if (color.id === editedColor.id) return editedColor;
-					return color;
-				}))
-				setColorToEdit(initialColor);
-				setEditing(false);
-			})
-			.catch(err => console.log(err));
+		if (colorToEdit.id > 0) {
+			axiosWithAuth().put(`colors/${colorToEdit.id}`, colorToEdit)
+				.then(response => {
+					const editedColor = response.data;
+					updateColors(colors.map(color => {
+						if (color.id === editedColor.id) return editedColor;
+						return color;
+					}))
+					setColorToEdit(initialColor);
+					setEditing(false);
+				})
+				.catch(err => console.log(err));
+		} else {
+			axiosWithAuth().post(`colors`, colorToEdit)
+				.then(response => {
+					updateColors(response.data);
+					setColorToEdit(initialColor);
+					setEditing(false);
+				})
+				.catch(err => console.log(err));
+		}
 	};
 
 	const deleteColor = deletedColor => {
@@ -42,6 +52,11 @@ const ColorList = ({ colors, updateColors }) => {
 			})
 			.catch(err => console.log(err));
 	};
+
+	const newColor = () => {
+		setEditing(true);
+		setColorToEdit(initialColor);
+	}
 
 	return (
 		<div className="colors-wrap">
@@ -65,9 +80,13 @@ const ColorList = ({ colors, updateColors }) => {
 					</li>
 				))}
 			</ul>
+
+			<div className="button-row">
+				<button onClick={e => newColor()}>new</button>
+			</div>
 			{editing && (
 				<form onSubmit={saveEdit}>
-					<legend>edit color</legend>
+					<legend>{colorToEdit.id > 0 ? 'edit' : 'new'} color</legend>
 					<label>
 						color name:
             <input

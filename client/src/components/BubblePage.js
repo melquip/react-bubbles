@@ -11,7 +11,6 @@ const BubblePage = () => {
 		if (colorList.length === 0) {
 			axiosWithAuth().get(`/colors`)
 			.then(response => {
-				console.log('colors', response.data);
 				setColorList(response.data);
 			})
 			.catch(err => console.log(err));
